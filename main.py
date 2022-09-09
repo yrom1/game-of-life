@@ -31,25 +31,42 @@ Input: board = [[1,1],[1,0]]
 Output: [[1,1],[1,1]]
 """
 
+import os
+import sys
 from collections import Counter
 from itertools import product
+from time import sleep
 from typing import List
 
+import numpy as np
 
-def gameOfLife(board: List[List[int]]) -> None:
+
+def gameOfLife() -> None:
+    global board
     m, n = len(board), len(board[0])
     alive = set([(i, j) for i, j in product(range(m), range(n)) if board[i][j] == 1])
-    neibs = list(product(range(-1, 2), range(-1, 2)))
+    neighbors = list(product(range(-1, 2), range(-1, 2)))
 
     count = Counter()
 
     for i, j in alive:
-        for dx, dy in neibs:
+        for dx, dy in neighbors:
             count[(i + dx, j + dy)] += 1
 
     for x, y in count:
         if 0 <= x < m and 0 <= y < n:
             if count[x, y] == 3 and board[x][y] == 0:
                 board[x][y] = 1
-            if count[x, y] not in [3, 4]:
+            if count[x, y] not in [3, 4]:  # [2, 3], but count includes itself
                 board[x][y] = 0
+
+
+if __name__ == "__main__":
+    np.set_printoptions(threshold=sys.maxsize)
+    N = 30
+    board = np.random.randint(0, 2, size=N**2).reshape(N, N).tolist()
+    for i in range(N):
+        os.system("clear")
+        print(np.array(board))
+        sleep(0.25)
+        gameOfLife()
